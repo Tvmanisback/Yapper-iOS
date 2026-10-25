@@ -1,0 +1,25 @@
+name: YapperiOS
+options:
+  bundleIdPrefix: website.yapper
+  deploymentTarget:
+    iOS: "15.0"
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    IPHONEOS_DEPLOYMENT_TARGET: "15.0"
+    TARGETED_DEVICE_FAMILY: "1,2"
+targets:
+  YapperiOS:
+    type: application
+    platform: iOS
+    sources:
+      - path: YapperiOS
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: website.yapper.ios
+        PRODUCT_NAME: Yapper
+        INFOPLIST_FILE: YapperiOS/Info.plist
+        GENERATE_INFOPLIST_FILE: NO
+        CODE_SIGN_STYLE: Manual
+        CODE_SIGNING_ALLOWED: NO
+        SWIFT_EMIT_LOC_STRINGS: YES
