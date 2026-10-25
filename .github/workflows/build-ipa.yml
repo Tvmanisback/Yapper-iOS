@@ -1,0 +1,72 @@
+name: Build Yapper iOS IPA
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: |
+          xcode-select -p
+          xcodebuild -version
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Build unsigned app
+        run: |
+          set -euo pipefail
+          xcodebuild \
+            -project YapperiOS.xcodeproj \
+            -scheme YapperiOS \
+            -configuration Release \
+            -sdk iphoneos \
+            -destination 'generic/platform=iOS' \
+            -derivedDataPath build/DerivedData \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+
+      - name: Package unsigned IPA
+        run: |
+          set -euo pipefail
+          APP_PATH="build/DerivedData/Build/Products/Release-iphoneos/YapperiOS.app"
+          test -d "$APP_PATH"
+          mkdir -p build/ipa/Payload
+          cp -R "$APP_PATH" build/ipa/Payload/
+          cd build/ipa
+          /usr/bin/zip -qry "$GITHUB_WORKSPACE/Yapper-iOS-unsigned.ipa" Payload
+          cd "$GITHUB_WORKSPACE"
+          shasum -a 256 Yapper-iOS-unsigned.ipa > Yapper-iOS-unsigned.ipa.sha256
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Yapper-iOS-unsigned-IPA
+          path: |
+            Yapper-iOS-unsigned.ipa
+            Yapper-iOS-unsigned.ipa.sha256
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Publish IPA to GitHub Release (tag builds only)
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            Yapper-iOS-unsigned.ipa
+            Yapper-iOS-unsigned.ipa.sha256
+          generate_release_notes: true
