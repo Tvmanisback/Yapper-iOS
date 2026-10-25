@@ -1,6 +1,6 @@
 name: YapperiOS
 options:
-  bundleIdPrefix: website.yapper
+  bundleIdPrefix: ios.YapperMediaLLC
   deploymentTarget:
     iOS: "15.0"
 settings:
@@ -16,7 +16,7 @@ targets:
       - path: YapperiOS
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: website.yapper.ios
+        PRODUCT_BUNDLE_IDENTIFIER: ios.YapperMediaLLC.Yapper
         PRODUCT_NAME: Yapper
         INFOPLIST_FILE: YapperiOS/Info.plist
         GENERATE_INFOPLIST_FILE: NO
