@@ -43,7 +43,7 @@ jobs:
       - name: Package unsigned IPA
         run: |
           set -euo pipefail
-          APP_PATH="build/DerivedData/Build/Products/Release-iphoneos/YapperiOS.app"
+          APP_PATH="build/DerivedData/Build/Products/Release-iphoneos/Yapper.app"
           test -d "$APP_PATH"
           mkdir -p build/ipa/Payload
           cp -R "$APP_PATH" build/ipa/Payload/
